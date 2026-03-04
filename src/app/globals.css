@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -12,15 +12,217 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.emoji-cursor-enabled,
+.emoji-cursor-enabled * {
+  cursor: none !important;
+}
+
+.emoji-blackhole-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  user-select: none;
+  font-size: 1.65rem;
+  line-height: 1;
+  transform: translate3d(-100px, -100px, 0);
+  opacity: 0;
+  transition: opacity 80ms linear;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.bg {
+  /* Richer, darker space gradient */
+  background: radial-gradient(circle at 50% 50%, #0b0b2b 0%, #050510 100%);
+}
+
+/* Base Stars */
+.stars, .stars-secondary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.stars {
+  /* Using a smaller, sharper dot for distance */
+  background-image: 
+    radial-gradient(1px 1px at 10% 10%, #fff, transparent),
+    radial-gradient(1px 1px at 20% 50%, #fff, transparent),
+    radial-gradient(2px 2px at 40% 80%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 60% 20%, #fff, transparent),
+    radial-gradient(1px 1px at 80% 40%, #fff, transparent),
+    radial-gradient(2px 2px at 90% 70%, #fff, transparent);
+  background-size: 200px 200px; /* Tiling the stars makes them look infinite */
+  opacity: 0.5;
+  animation: twinkle 5s infinite ease-in-out;
+}
+
+/* Smaller, deeper stars for Parallax effect */
+.stars-secondary {
+  background-image: 
+    radial-gradient(1px 1px at 15% 25%, #fff, transparent),
+    radial-gradient(1px 1px at 75% 65%, #fff, transparent);
+  background-size: 150px 150px;
+  opacity: 0.3;
+  animation: twinkle 8s infinite ease-in-out reverse;
+}
+
+/* Modern Shooting Star: Thinner and with a blur tail */
+.shooting-star {
+  position: absolute;
+  top: var(--star-top, 20%);
+  left: -10vw;
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+  filter: drop-shadow(0 0 4px #fff);
+  opacity: 0;
+  transform: rotate(25deg);
+  animation: modern-shoot 4s infinite ease-out;
+}
+
+/* Randomize shooting star positions/delays */
+.shooting-star:nth-child(1) { --star-top: 10%; animation-delay: 0s; }
+.shooting-star:nth-child(2) { --star-top: 40%; animation-delay: 7s; }
+.shooting-star:nth-child(3) { --star-top: 70%; animation-delay: 12s; }
+
+@keyframes modern-shoot {
+  0% {
+    transform: translateX(0) translateY(0) rotate(25deg) scaleX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(10vw) translateY(5vh) rotate(25deg) scaleX(1);
+  }
+  30% {
+    transform: translateX(100vw) translateY(45vh) rotate(25deg) scaleX(1);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.67; transform: scale(1.05); }
+}
+
+.header-hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, #111729 0%, #080c1a 37%, #03050d 100%);
+}
+
+.header-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.header-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(6, 10, 22, 0.06) 0%, rgba(3, 5, 10, 0.76) 72%, rgba(0, 0, 0, 0.92) 100%),
+    radial-gradient(circle at 70% 20%, rgba(59, 130, 246, 0.18), transparent 42%),
+    radial-gradient(circle at 20% 80%, rgba(20, 184, 166, 0.12), transparent 45%);
+  pointer-events: none;
+}
+
+.header-copy {
+  position: relative;
+  z-index: 3;
+  width: min(86vw, 780px);
+  text-align: center;
+  padding: 1.25rem;
+  color: #f8fbff;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.16);
+}
+
+.header-copy h1 {
+  margin: 0;
+  font-size: clamp(1.55rem, 4.2vw, 3.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+}
+
+.header-copy p {
+  margin: clamp(0.85rem, 2vw, 1.35rem) 0 0;
+  font-size: clamp(0.82rem, 1.2vw, 1.05rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+
+.links {
+  position: absolute; /* Positions the links block */
+  list-style: none; /* Removes default list bullets */
+  width: 180px;    /* Sets the width of the links block */
+  bottom: 40px;     /* Positions it from the bottom */
+  right: 20px;      /* Positions it from the right */
+  padding: 0;
+  margin: 0;
+}
+
+.links li {
+  border-bottom: #222 1px solid; /* Darker border for bottom */
+  border-bottom: rgba(255,255,255,0.1) 1px solid; /* Lighter, transparent border */
+}
+
+.links li a, .links li button {
+  transition: opacity 0.2s ease-out; /* Smooth opacity change on hover */
+  font-family: 'Dosis', sans-serif;   /* Font family */
+  text-transform: uppercase;          /* Uppercase text */
+  text-align: right;                 /* Right-align text */
+  padding: 0.25em 0;                /* Vertical padding */
+  letter-spacing: 2px;               /* Letter spacing */
+  font-weight: 200;                  /* Light font weight */
+  font-size: 12px;                   /* Font size */
+  display: block;                    /* Makes the entire line clickable */
+  width: 100%;                       /* Occupies full width of <li> */
+  opacity: 0.4;                     /* Initial opacity (semi-transparent) */
+  color: #FFF;                       /* White text color */
+}
+.links li a:hover, .links li button:hover {
+  opacity: 0.8; /* Increased opacity on hover */
+}
+.links li .github:before {
+  opacity: 0.5;   /* Semi-transparent prefix */
+  content: '</>';    /* Adds "@" before "by msurguy" */
+  float: left;     /* Floats the prefix to the left */
+}
+
+.links li .mail:before {
+  opacity: 0.5;   /* Semi-transparent prefix */
+  content: '@';    /* Adds "&" before "Blog post" */
+  float: left;     /* Floats the prefix to the left */
+}
+
+.links li .discord:before {
+  opacity: 0.5;   /* Semi-transparent prefix */
+  content: '🖨';    /* Adds "&" before "Blog post" */
+  float: left;     /* Floats the prefix to the left */
 }
