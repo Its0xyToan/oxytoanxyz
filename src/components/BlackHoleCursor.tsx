@@ -29,6 +29,12 @@ export default function BlackHoleCursor() {
     let currentY = -100;
     let isVisible = false;
 
+    const updateTarget = (clientX: number, clientY: number) => {
+      targetX = clientX;
+      targetY = clientY;
+      isVisible = true;
+    };
+
     const render = () => {
       currentX = targetX;
       currentY = targetY;
@@ -38,9 +44,15 @@ export default function BlackHoleCursor() {
     };
 
     const handlePointerMove = (event: PointerEvent) => {
-      targetX = event.clientX;
-      targetY = event.clientY;
-      isVisible = true;
+      updateTarget(event.clientX, event.clientY);
+    };
+
+    const handlePointerRawUpdate: EventListener = (event) => {
+      if (!(event instanceof PointerEvent)) {
+        return;
+      }
+
+      updateTarget(event.clientX, event.clientY);
     };
 
     const handlePointerLeave = () => {
@@ -48,7 +60,7 @@ export default function BlackHoleCursor() {
     };
 
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    window.addEventListener("pointerrawupdate", handlePointerMove, { passive: true });
+    window.addEventListener("pointerrawupdate", handlePointerRawUpdate, { passive: true });
     document.addEventListener("pointerleave", handlePointerLeave);
     window.addEventListener("blur", handlePointerLeave);
     rafId = window.requestAnimationFrame(render);
@@ -57,7 +69,7 @@ export default function BlackHoleCursor() {
       window.cancelAnimationFrame(rafId);
 
       window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerrawupdate", handlePointerMove);
+      window.removeEventListener("pointerrawupdate", handlePointerRawUpdate);
       document.removeEventListener("pointerleave", handlePointerLeave);
       window.removeEventListener("blur", handlePointerLeave);
       document.documentElement.classList.remove("emoji-cursor-enabled");
